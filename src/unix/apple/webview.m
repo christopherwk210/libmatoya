@@ -221,6 +221,18 @@ struct webview *mty_webview_create(MTY_App *app, MTY_Window window, const char *
 
 	[ctx->webview.configuration.userContentController addUserScript:script];
 
+	// If debug enabled, open the dev tools
+	if (debug) {
+		@try {
+			id inspector = [ctx->webview valueForKey:@"_inspector"];
+			if ([inspector respondsToSelector:@selector(show)]) {
+				[inspector performSelector:@selector(show)];
+			}
+		} @catch (NSException *exception) {
+			NSLog(@"Could not open WKWebView inspector: %@", exception);
+		}
+	}
+
 	return ctx;
 }
 
